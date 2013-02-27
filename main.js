@@ -25,11 +25,17 @@ var fname = document.getElementById("fname"),
 	box2,
 	box3,
 	errors = document.getElementById("errors"),
+	mopeeps = document.getElementById("mopeeps"),
 
 	addPeep = document.getElementById("addPeep");
 
 
 //Functions
+var gid = function(id){
+	var element = document.getElementById(id);
+	return element;
+}
+
 var say = function(input){
 	console.log(input)
 }
@@ -109,8 +115,12 @@ var changeCats = function(){
 	
 }
 
-var saveData = function(){
-	var keyID = Math.floor(Math.random()*19876);
+var saveData = function(key){
+	if(!key){
+		var keyID = Math.floor(Math.random()*19876);
+	}else{
+		keyID = key;
+	}
 	var donorVal = getRadio();
 	getCheckBoxVal();
 
@@ -196,7 +206,7 @@ var createEditDeleteLks = function(storeKey,editDeleteLks){
 	deleteLink.href = "#";
 	deleteLink.key = storeKey;
 	var deleteLinkText = "Delete Peep";
-	//deleteLink.addEventListener("click", deleteItem);
+	deleteLink.addEventListener("click", deleteItem);
 	deleteLink.innerHTML = deleteLinkText;
 	editDeleteLks.appendChild(deleteLink);
 }
@@ -252,49 +262,73 @@ var editItem = function(){
 
 
 }
-
+/*
 var validator = function(eventData){
-	var valFname = fname,
-		valLname = lname,
-		valPnum = pnum,
-		valEmail = email,
-		valCat = cat;
+	var valFname = gid(fname),
+		valLname = gid(lname),
+		valPnum = gid(pnum),
+		valEmail = gid(email),
+		valCat = gid(cat);
+
+
+	errors.innerHTML = "";
+	valFname.style.border = 1px solid red;
+	valLname.style.border = 1px solid red;
+	valCat.style.border = 1px solid red;
+	valEmail.style.border = 1ox solid red;
 
 	var errorMsgs = [];
 
 	if(valFname.value === ""){
 		var fnameError = "Fill in first name";
-		valFname.style.border = 1px solid red;
+		//valFname.style.border = 1px solid red;
 		errorMsgs.push(fnameError);
 	}
 	if(valLname === ""){
 		var lnameError = "Fill in last name";
-		valLname.style.border = 1px solid red;
+		//valLname.style.border = 1px solid red;
 		errorMsgs.push(lnameError);
+		say("fname error")
 	}
 	if(valCat === "----"){
 		var catError = "Pick a Category";
-		valCat.style.border = 1px solid red;
+		//valCat.style.border = 1px solid red;
 		errorMsgs.push(catError);
 	}
 	var emReEx = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 	if(!emReEx.exec(valEmail.value)){
 		var emailError = "Enter a valid E-mail";
-		valEmail.style.border = 1ox solid red;
+		//valEmail.style.border = 1px solid red;
 		errorMsgs.push(emailError);
 	}
 	if(errorMsgs.length <= 1){
-		for(i = 0, i < errorMsgs.length, i++){
+		for(i = 0; i < errorMsgs.length; i++){
 			var text = document.createElement("li");
 			text.innerHTML = errorMsgs[i];
-			errors.appendChild(text)
+			errors.appendChild(text);
 		}
+		eventData.preventDefault();
+		return False;
+	}else{
+		saveData(this.key);
 	}
-	eventData.preventDefault();
-	return False;
+
+}
+*/
+
+var deleteItem = function(){
+	var deleteComf = confirm("Are you sure you want to delete this Peep?")
+		if(deleteComf){
+			localStorage.removeItem(this.key);
+			window.location.reload(true);
+		}else{
+			alert("Peep Not Deleted")
+		}
 }
 
-
+var refresh = function(){
+	window.location.reload(true);
+}
 
 
 
@@ -303,11 +337,14 @@ getData();
 
 changeCats();
 
-addPeep.addEventListener("click", validator);
+// NOT WORKING addPeep.addEventListener("click", validator);
+addPeep.addEventListener("click", saveData);
 
 displayData.addEventListener("click", showData);
 
 clearData.addEventListener("click", clearLocal);
+
+mopeeps.addEventListener("click", refresh);
 
 
 /*
