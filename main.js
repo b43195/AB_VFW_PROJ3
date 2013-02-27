@@ -262,24 +262,24 @@ var editItem = function(){
 
 
 }
-/*
+
 var validator = function(eventData){
-	var valFname = gid(fname),
-		valLname = gid(lname),
-		valPnum = gid(pnum),
-		valEmail = gid(email),
-		valCat = gid(cat);
+	var valFname = gid("fname"),
+		valLname = gid("lname"),
+		valPnum = gid("pnum"),
+		valEmail = gid("email"),
+		valCat = gid("cat");
 
 
 	errors.innerHTML = "";
-	valFname.style.border = 1px solid red;
+	/*valFname.style.border = 1px solid red;
 	valLname.style.border = 1px solid red;
 	valCat.style.border = 1px solid red;
-	valEmail.style.border = 1ox solid red;
+	valEmail.style.border = 1ox solid red;*/
 
 	var errorMsgs = [];
 
-	if(valFname.value === ""){
+	if(valFname.value == ""){
 		var fnameError = "Fill in first name";
 		//valFname.style.border = 1px solid red;
 		errorMsgs.push(fnameError);
@@ -308,13 +308,13 @@ var validator = function(eventData){
 			errors.appendChild(text);
 		}
 		eventData.preventDefault();
-		return False;
+		return false;
 	}else{
 		saveData(this.key);
 	}
 
 }
-*/
+
 
 var deleteItem = function(){
 	var deleteComf = confirm("Are you sure you want to delete this Peep?")
@@ -338,13 +338,14 @@ getData();
 changeCats();
 
 // NOT WORKING addPeep.addEventListener("click", validator);
-addPeep.addEventListener("click", saveData);
+addPeep.addEventListener("click", validator);
 
 displayData.addEventListener("click", showData);
 
 clearData.addEventListener("click", clearLocal);
 
 mopeeps.addEventListener("click", refresh);
+
 
 
 /*
