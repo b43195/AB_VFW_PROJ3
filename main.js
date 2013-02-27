@@ -1,9 +1,6 @@
 // Andisheh Bassiri
-// VFW Project 1
+// VFW Project 3
 // 1302
-
-
-
 
 
 //Get ID
@@ -21,9 +18,13 @@ var fname = document.getElementById("fname"),
 	notes = document.getElementById("notes"),
 	clearData = document.getElementById("cleardata"),
 	displayData = document.getElementById("displayData"),
+	rock = document.getElementById("rock"),
+	paper = document.getElementById("paper"),
+	scissor = document.getElementById("scissor"),
 	box1,
 	box2,
 	box3,
+	errors = document.getElementById("errors"),
 
 	addPeep = document.getElementById("addPeep");
 
@@ -96,10 +97,9 @@ var getRadio = function(){
 }
 
 var changeCats = function(){
-	catOps = ["Friend", "Co-Worker","Family"];
-	for(i=0; i<3; i++){
+	catOps = ["----","Friend", "Co-Worker","Family"];
+	for(i=0; i<4; i++){
 		var catName = catOps[i];
-		say(catName);
 		var catChoices = document.createElement("option");
 		catChoices.setAttribute("value", catOps[i]);
 		cat.appendChild(catChoices);
@@ -145,6 +145,7 @@ var saveData = function(){
 	alert("Peep Saved!");
 }
 
+
 var showData = function(){
 	var div = document.getElementsByTagName("div");	
 	div[0].setAttribute("class","remove");
@@ -154,9 +155,12 @@ var showData = function(){
 	addDiv.appendChild(addList);
 	document.body.appendChild(addDiv);
 	
+	
 	for(i=0; i < localStorage.length; i++){
 		var addLi = document.createElement("li");
 		addList.appendChild(addLi);
+
+		var editDeleteLks = document.createElement("li");
 
 		var storeKey = localStorage.key(i);
 		var value = localStorage.getItem(storeKey);
@@ -170,14 +174,128 @@ var showData = function(){
 			addSubUl.appendChild(addSubLi);
 			var peepData = peepItem[n][0]+" "+peepItem[n][1];
 			addSubLi.innerHTML = peepData;
+			addSubUl.appendChild(editDeleteLks);
 		}
+		createEditDeleteLks(storeKey,addSubUl);
 	}
 }
+//adds edit and delete links for each item in localstorage
+var createEditDeleteLks = function(storeKey,editDeleteLks){
+	var editLink = document.createElement("a");
+	editLink.href = "#";
+	editLink.key = storeKey;
+	var editLinkText = "Edit Peep";
+	editLink.addEventListener("click", editItem);
+	editLink.innerHTML = editLinkText;
+	editDeleteLks.appendChild(editLink);
 
-var soaDisp = function(){
-	var soaNumber = soa.value
-	soanum.innerHTML = soaNumber;
+	var breakTag = document.createElement("br");
+	editDeleteLks.appendChild(breakTag);
+
+	var deleteLink = document.createElement("a");
+	deleteLink.href = "#";
+	deleteLink.key = storeKey;
+	var deleteLinkText = "Delete Peep";
+	//deleteLink.addEventListener("click", deleteItem);
+	deleteLink.innerHTML = deleteLinkText;
+	editDeleteLks.appendChild(deleteLink);
 }
+
+var editItem = function(){
+	var itemValue = localStorage.getItem(this.key);
+	var data = JSON.parse(itemValue);
+	say(data);
+
+	//Show form again
+	var div = document.getElementsByTagName("div");	
+	div[0].removeAttribute("class","remove");
+	//repopular form
+	fname.value = data.fname[1];
+	lname.value = data.lname[1];
+	company.value = data.company[1];
+	pnum.value = data.pnum[1];
+	email.value = data.email[1];
+	addy.value = data.addy[1];
+	bday.value = data.bday[1];
+	rock.value = data.rock[1];
+	paper.value = data.paper[1];
+	scissor.value = data.scissor[1];
+//write this
+	var radio  = document.getElementsByTagName("input");
+	var radio1 = radio[10];
+	var radio2 = radio[11];
+		if(radio1.value == "Yes" && data.donor[1] == "Yes"){
+			radio1.setAttribute("checked","checked")
+		}else if(radio2 == "Yes" && data.donor[1] == "Yes"){
+			radio1.setAttribute("checked","checked")
+		}
+	if(data.rock[1] == "Yes"){
+		rock.setAttribute("Checked, Checked");
+	}
+	if(data.paper[1] == "Yes"){
+		paper.setAttribute("Checked, Checked");
+	}
+	if(data.scissor[1] == "Yes"){
+		scissor.setAttribute("Checked, Checked");
+	}
+
+	soa.value = data.soa[1];
+	cat.value = data.cat[1];
+	quotes.value = data.quotes[1];
+	notes.value = data.notes[1];
+
+	addPeep.removeEventListener("Click", saveData);
+	addPeep.value = "Edit Contact";
+	var editPeep = addPeep;
+	editPeep.addEventListener("click", validator);
+	editPeep.key = this.key;
+
+
+}
+
+var validator = function(eventData){
+	var valFname = fname,
+		valLname = lname,
+		valPnum = pnum,
+		valEmail = email,
+		valCat = cat;
+
+	var errorMsgs = [];
+
+	if(valFname.value === ""){
+		var fnameError = "Fill in first name";
+		valFname.style.border = 1px solid red;
+		errorMsgs.push(fnameError);
+	}
+	if(valLname === ""){
+		var lnameError = "Fill in last name";
+		valLname.style.border = 1px solid red;
+		errorMsgs.push(lnameError);
+	}
+	if(valCat === "----"){
+		var catError = "Pick a Category";
+		valCat.style.border = 1px solid red;
+		errorMsgs.push(catError);
+	}
+	var emReEx = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+	if(!emReEx.exec(valEmail.value)){
+		var emailError = "Enter a valid E-mail";
+		valEmail.style.border = 1ox solid red;
+		errorMsgs.push(emailError);
+	}
+	if(errorMsgs.length <= 1){
+		for(i = 0, i < errorMsgs.length, i++){
+			var text = document.createElement("li");
+			text.innerHTML = errorMsgs[i];
+			errors.appendChild(text)
+		}
+	}
+	eventData.preventDefault();
+	return False;
+}
+
+
+
 
 
 // Script
@@ -185,13 +303,12 @@ getData();
 
 changeCats();
 
-addPeep.addEventListener("click", saveData);
+addPeep.addEventListener("click", validator);
 
 displayData.addEventListener("click", showData);
 
 clearData.addEventListener("click", clearLocal);
 
-soa.addEventListener("focus", soaDisp);
 
 /*
 fname.addEventListener("focus", function(){hasFocus(fname)});
